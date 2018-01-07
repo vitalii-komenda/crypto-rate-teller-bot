@@ -8,6 +8,9 @@ The code is written on nodejs 8 and compiled down to nodejs 6 by babel, because 
 [https://t.me/CryptoRateTeller_bot](https://t.me/CryptoRateTeller_bot)
 
 ## Installation
+Generate token using https://t.me/BotFather.
+Put the token in serverless.yml under environment section
+
 ### Install packages
 ```
 npm i
