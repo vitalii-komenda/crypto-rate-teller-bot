@@ -23,6 +23,9 @@ serverless invoke local --function cryptorateteller
 #### To deploy to AWS Lambda
 ```
 serverless deploy
+
+# Install telegram webhook
+curl -F "url=https://[RETURNED_LINK]/dev/cryptorateteller" https://api.telegram.org/bot[TELEGRAM_TOKEN]/setWebhook
 ```
 
 
