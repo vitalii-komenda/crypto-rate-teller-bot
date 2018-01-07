@@ -1,11 +1,13 @@
 # Crypto rate bot
 
 A Telegram inline bot for getting cryptocurrency exchange rates.
-Its structured via [serverless](https://serverless.com/) and can be deployed to AWS Lambda
+Its structured via [serverless](https://serverless.com/) and can be deployed to AWS Lambda.
+
+The code is written on nodejs 8 and compiled down to nodejs 6 by babel, because AWS Lambda does not support nodejs 8 yet.
 
 [https://t.me/CryptoRateTeller_bot](https://t.me/CryptoRateTeller_bot)
 
-### Installation
+## Installation
 ### Install packages
 ```
 npm i
@@ -21,13 +23,13 @@ serverless deploy
 ```
 
 
-### Usage
+## Usage
 #### Go to an user or group and type
 ```
 @CryptoRateTeller_bot uah
 ```
 
-### Example
+## Example
 
 1 BTC **468071.17 UAH**
 
