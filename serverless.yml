@@ -1,0 +1,27 @@
+# NOTE: update this with your service name
+service: telegram-crypto-rate-bot
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+  - serverless-webpack
+
+# Enable auto-packing of external modules
+custom:
+  webpackIncludeModules:
+    packagePath: './package.json'
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-central-1
+  environment:
+    TOKEN: 546703598:AAEuXRYb74E6GpUYBdUWMzZ1Wj6agfUSF6s
+
+functions:
+  cryptorateteller:
+    handler: handler.handle
+    events:
+      - http:
+          path: cryptorateteller
+          method: post
+          cors: true

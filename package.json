@@ -1,0 +1,45 @@
+{
+  "name": "crypto-rate-teller-bot",
+  "version": "0.0.1",
+  "description": "Telegram inline bot which tells cryptocurrency prices Edit",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "request": "^2.83.0",
+    "telegraf": "^3.17.2",
+    "babel-runtime": "^6.26.0",
+    "jest": "^21.2.1",
+    "lambda-log": "^1.3.0",
+    "source-map-support": "^0.4.18"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-source-map-support": "^1.0.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "serverless-webpack": "^4.2.0",
+    "webpack": "^3.10.0",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitaliy-komenda/crypto-rate-telegram-bot.git"
+  },
+  "keywords": [
+    "cryptocurrency",
+    "bot",
+    "telegram",
+    "inline"
+  ],
+  "author": "vitalii komenda",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/vitaliy-komenda/crypto-rate-telegram-bot/issues"
+  },
+  "homepage": "https://github.com/vitaliy-komenda/crypto-rate-telegram-bot#readme"
+}
