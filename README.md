@@ -27,7 +27,7 @@ serverless deploy
 
 
 ## Usage
-#### Go to an user or group and type
+#### Go to an user or group and type to bot currency that you want to know exchange rate for
 ```
 @CryptoRateTeller_bot uah
 ```
