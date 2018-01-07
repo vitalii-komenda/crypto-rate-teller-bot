@@ -15,7 +15,7 @@ provider:
   stage: dev
   region: eu-central-1
   environment:
-    TOKEN: 546703598:AAEuXRYb74E6GpUYBdUWMzZ1Wj6agfUSF6s
+    TOKEN: 546703598:
 
 functions:
   cryptorateteller:
