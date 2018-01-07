@@ -32,7 +32,7 @@ serverless deploy
 @CryptoRateTeller_bot uah
 ```
 
-## Example
+#### Reply example
 
 1 BTC **468071.17 UAH**
 
