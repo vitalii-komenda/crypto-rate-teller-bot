@@ -1,4 +1,5 @@
 const net = require('./net');
+const db = require('./db');
 require('dotenv').config();
 const Telegraf = require('telegraf');
 const log = require('lambda-log');
@@ -7,7 +8,6 @@ const currencies = ['BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC
 
 const prepareResponse = function (data, to) {
     data = JSON.parse(data);
-    log.info(data.RAW['BTC']['BTC'])
     const str = currencies.map(c => (`1 ${c} *${parseFloat(data.RAW[c][to].PRICE).toFixed(2)} ${to}*`));
     const content = `
 ${str.join('\n')}
@@ -17,31 +17,36 @@ ${str.join('\n')}
 
 
 function init(token, body) {
-    const bot = new Telegraf(token);
-    bot.hears('hi', ctx => ctx.reply('Hey there!'));
+    try {
+        const bot = new Telegraf(token);
+        bot.hears('hi', ctx => ctx.reply('Hey there!'));
 
-    bot.hears(new RegExp(`(${currencies.join('|')})`, 'i'), async (ctx) => {
-        log.info('what');
-        log.info(ctx.message);
-        if (ctx.message.text) {
-            const to = ctx.message.text.toUpperCase();
-            const data = await net.getExchangeRates(to, currencies);
-            const content = prepareResponse(data, to);
-            return ctx.reply(content);
-        } else {
-            return ctx.reply('do not know this currency');
-        }
-    });
+        bot.hears(new RegExp(`(${currencies.join('|')})`, 'i'), async (ctx) => {
+            log.info('what');
+            log.info(ctx.message);
 
-    bot.command('help', (ctx) => ctx.reply('Type currency name to see rates (for example EUR)'));
+            if (ctx.message.text) {
+                const to = ctx.message.text.toUpperCase();
+                const data = await net.getExchangeRates(to, currencies);
+                const content = prepareResponse(data, to);
 
-    bot.on('inline_query', async (ctx) => {
-        const to = ctx.inlineQuery.query.toUpperCase();
-        let content = 'Not found';
-        if (to.length != 3) {
-            return;
-        }
-        try {
+                db.put({id: ctx.message.from.id, currencies: content});
+
+                return ctx.reply(content);
+            } else {
+                return ctx.reply('do not know this currency');
+            }
+        });
+
+        bot.command('help', (ctx) => ctx.reply('Type currency name to see rates (for example EUR)'));
+
+        bot.on('inline_query', async (ctx) => {
+            const to = ctx.inlineQuery.query.toUpperCase();
+            let content = 'Not found';
+            if (to.length != 3) {
+                return;
+            }
+
             const data = await net.getExchangeRates(to, currencies);
             content = prepareResponse(data, to);
             const result = [{
@@ -55,18 +60,17 @@ function init(token, body) {
                     message_text: content
                 }
             }]
-            ctx.answerInlineQuery(result)
-        } catch(error) {
-            log.error(error);
-        };
-    });
-    const tmp = JSON.parse(body);
-    bot.handleUpdate(tmp);
+            ctx.answerInlineQuery(result);
+        });
+        const tmp = JSON.parse(body);
+        bot.handleUpdate(tmp);
+    } catch(error) {
+        log.error(error);
+    };
 };
 
 
 
 exports.start = (token, body) => {
-    log.info('started');
     init(token, body);
 };
