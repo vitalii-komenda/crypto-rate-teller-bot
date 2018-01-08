@@ -7,7 +7,8 @@ AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.SECRET_ACCESS_KEY
 });
-
+log.info(process.env.AWS_ACCESS_KEY_ID);
+log.info(process.env.SECRET_ACCESS_KEY);
 const docClient = new AWS.DynamoDB.DocumentClient();
 const table = "rates";
 
@@ -17,7 +18,7 @@ exports.put = (currency) => {
         Item: currency
     };
 
-    log.info("Adding a new item...");
+    log.info(`Adding a new item... ${JSON.stringify(params)}`);
     docClient.put(params, function(err, data) {
         if (err) {
             log.error(`Unable to add item. Error JSON: ${JSON.stringify(err, null, 2)}`);

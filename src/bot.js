@@ -8,7 +8,7 @@ const currencies = ['BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC
 
 const prepareResponse = function (data, to) {
     data = JSON.parse(data);
-    const str = currencies.map(c => (`1 ${c} *${parseFloat(data.RAW[c][to].PRICE).toFixed(2)} ${to}*`));
+    const str = currencies.map(c => (`1 ${c} *${parseFloat(data.RAW[c][to].PRICE).toFixed(3)} ${to}*`));
     const content = `
 ${str.join('\n')}
 `;
@@ -20,22 +20,22 @@ function init(token, body) {
     try {
         const bot = new Telegraf(token);
         bot.hears('hi', ctx => ctx.reply('Hey there!'));
+//new RegExp(`^(${currencies.join('|')})$`, 'i')
+        bot.hears('eur', async (ctx) => {
+            // log.info('what');
+            // log.info(ctx.message);
 
-        bot.hears(new RegExp(`(${currencies.join('|')})`, 'i'), async (ctx) => {
-            log.info('what');
-            log.info(ctx.message);
+            // if (ctx.message.text) {
+            //     const to = ctx.message.text.toUpperCase();
+            //     const data = await net.getExchangeRates(to, currencies);
+            //     const content = prepareResponse(data, to);
 
-            if (ctx.message.text) {
-                const to = ctx.message.text.toUpperCase();
-                const data = await net.getExchangeRates(to, currencies);
-                const content = prepareResponse(data, to);
+            //     db.put({id: ctx.message.from.id.toString(), currencies: content});
 
-                db.put({id: ctx.message.from.id, currencies: content});
-
-                return ctx.reply(content);
-            } else {
-                return ctx.reply('do not know this currency');
-            }
+            //     return ctx.reply(content);
+            // } else {
+            //     return ctx.reply('do not know this currency');
+            // }
         });
 
         bot.command('help', (ctx) => ctx.reply('Type currency name to see rates (for example EUR)'));
