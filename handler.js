@@ -1,7 +1,7 @@
 module.exports.handle = (event, context, callback) => {
     if (event.body) {
         const log = require('lambda-log');
-        const bot = require('./bot');
+        const bot = require('./src/bot');
         log.info('Started');
         log.info(event.body);
 
