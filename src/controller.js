@@ -54,7 +54,7 @@ export const getRate = async (message, db) => {
             if (!data.RAW[from]) return;
             const val = parseFloat(data.RAW[from][to].PRICE);
             const change = calcChange(savedItem.currencies[from], val);
-            return `1 ${from} is *${val.toFixed(3)} ${to}* (${(change-100).toFixed(1)}%)`;
+            return `1 ${from} is *${val.toFixed(3)} ${to}* (${(100 - change).toFixed(1)}%)`;
         });
         log.info('reply');
         log.info(items);
