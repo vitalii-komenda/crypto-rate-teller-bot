@@ -2,10 +2,11 @@ const net = require('./net');
 const db = require('./db');
 const Telegraf = require('telegraf');
 const log = require('lambda-log');
-const token = process.env.TOKEN;
-const currencies = ['BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC'];
+const currencies = [
+    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC',
+];
 
-const prepareResponse = function (data, to) {
+const prepareResponse = function(data, to) {
     data = JSON.parse(data);
     const raw = {};
     const str = currencies.map((c) => {
@@ -16,21 +17,21 @@ const prepareResponse = function (data, to) {
 ${str.join('\n')}
 `;
     return {content, raw};
-}
+};
 
 export const getRate = async (message) => {
     const to = message.text.toUpperCase();
     const data = await net.getExchangeRates(to, currencies);
 
     const items = await db.get({
-        id: message.from.id.toString()
+        id: message.from.id.toString(),
     });
     const res = items.Item;
     log.info(res);
     db.put({
         id: message.from.id.toString(),
         currencies: data.raw,
-        currency: message.text
+        currency: message.text,
     });
     log.info(data.RAW);
     if (res.currencies) {
@@ -65,28 +66,34 @@ export class Controller {
 
 
     bindHi() {
-        this.bot.hears('hi', ctx => ctx.reply('Hey there!'));
+        this.bot.hears('hi', (ctx) => ctx.reply('Hey there!'));
     }
 
     bindRate() {
-        this.bot.hears(new RegExp(`^(${currencies.join('|')})$`, 'i'), async (ctx) => {
-            try {
-                this.log.info('what');
-                this.log.info(ctx.message);
+        this.bot.hears(
+            new RegExp(`^(${currencies.join('|')})$`, 'i'),
+            async (ctx) => {
+                try {
+                    this.log.info('what');
+                    this.log.info(ctx.message);
 
-                if (ctx.message.text) {
-                    return ctx.reply(getRate(ctx.message));
-                } else {
-                    return ctx.reply('do not know this currency');
-                }
-            } catch(error) {
-                this.log.error(error);
-            };
-        });
+                    if (ctx.message.text) {
+                        return ctx.reply(getRate(ctx.message));
+                    } else {
+                        return ctx.reply('do not know this currency');
+                    }
+                } catch (error) {
+                    this.log.error(error);
+                };
+            }
+        );
     }
 
     bindHelp() {
-        this.bot.command('help', (ctx) => ctx.reply('Type currency name to see rates (for example EUR)'));
+        this.bot.command(
+            'help',
+            (ctx) => ctx.reply('Type currency name to see rates (for example EUR)')
+        );
     }
 
     bindInlineQuery() {
@@ -107,16 +114,16 @@ export class Controller {
                 /* eslint-disable camelcase */
                 input_message_content: {
                     parse_mode: 'markdown',
-                    message_text: content.content
-                }
-            }]
+                    message_text: content.content,
+                },
+            }];
             ctx.answerInlineQuery(result);
         });
     }
 };
 
 
-export const handle = (token, body) => {
+export default handle = (token, body) => {
     const bot = new Telegraf(token);
 
     (new Controller(bot, log, net)).handle(

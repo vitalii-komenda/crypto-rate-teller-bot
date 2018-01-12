@@ -1,9 +1,8 @@
 require('dotenv').config();
 const log = require('lambda-log');
-const db = require('./src/db');
 
 module.exports.handle = (event, context, callback) => {
-    const resp = "Body is empty";
+    let resp = 'Body is empty';
     if (event.body) {
         const controller = require('./src/controller');
         log.info('Started');
