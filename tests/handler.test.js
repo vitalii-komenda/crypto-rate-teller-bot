@@ -25,7 +25,7 @@ command.btc = {
                     'type': 'private',
                 },
                 'date': 1515772570,
-                'text': 'eur',
+                'text': 'eth',
             },
         },
     ],
@@ -49,21 +49,14 @@ test('getRate', async () => {
             return Promise.resolve({
                 Item: {
                     currencies: {
-                        BTC: 1,
-                        EUR: 14100,
+                        BTC: 9.9782,
+                        ETH: 1,
                     },
                 },
             });
         },
         put() {
-            return Promise.resolve({
-                Item: {
-                    currencies: {
-                        BTC: 1,
-                        EUR: 14100,
-                    },
-                },
-            });
+            return Promise.resolve({});
         },
     };
 

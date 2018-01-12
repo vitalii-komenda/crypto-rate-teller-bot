@@ -3,14 +3,14 @@ const db = require('./db');
 const Telegraf = require('telegraf');
 const log = require('lambda-log');
 const currencies = [
-    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC',
+    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC', 'EUR', 'USD',
 ];
 
 const prepareResponse = function(data, to) {
     const raw = {};
     const str = currencies.map((c) => {
         raw[c] = parseFloat(data.RAW[c][to].PRICE);
-        return `1 ${c} *${parseFloat(data.RAW[c][to].PRICE).toFixed(3)} ${to}*`;
+        return `1 ${c} is *${parseFloat(data.RAW[c][to].PRICE).toFixed(3)} ${to}*`;
     });
     const content = `
 ${str.join('\n')}
@@ -18,6 +18,19 @@ ${str.join('\n')}
     return {content, raw};
 };
 
+function precisionRound(number, precision) {
+    const factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+  }
+
+const calcChange = (from, to) => {
+    const res = (100 / precisionRound(from, 3)) * precisionRound(to, 3);
+
+    if (isNaN(res)) {
+        return 100;
+    }
+    return res;
+};
 
 export const getRate = async (message, db) => {
     const to = message.text.toUpperCase();
@@ -25,7 +38,7 @@ export const getRate = async (message, db) => {
     data = JSON.parse(data);
     const prepared = prepareResponse(data, to);
 
-    const id = `${message.from.id.toString()}-${message.text}`;
+    const id = `${message.chat.id.toString()}-${to}`;
     const items = await db.get({
         id,
     });
@@ -34,14 +47,14 @@ export const getRate = async (message, db) => {
     db.put({
         id,
         currencies: prepared.raw,
-        currency: message.text,
+        currency: to,
     });
     if (savedItem && savedItem.currencies) {
         const items = Object.keys(savedItem.currencies).map((from) => {
             if (!data.RAW[from]) return;
             const val = parseFloat(data.RAW[from][to].PRICE);
-            const change = (100 / savedItem.currencies[to]) * val;
-            return `1 ${from} is ${val.toFixed(3)} ${to} (${(change-100).toFixed()}%)`;
+            const change = calcChange(savedItem.currencies[from], val);
+            return `1 ${from} is *${val.toFixed(3)} ${to}* (${(change-100).toFixed(1)}%)`;
         });
         log.info('reply');
         log.info(items);
@@ -81,7 +94,8 @@ export class Controller {
                 this.log.info('inside bindRate');
 
                 if (ctx.message.text) {
-                    return ctx.reply(await getRate(ctx.message, this.db));
+                    const content = await getRate(ctx.message, this.db);
+                    return ctx.reply(content);
                 } else {
                     return ctx.reply('do not know this currency');
                 }
@@ -99,14 +113,17 @@ export class Controller {
     bindInlineQuery() {
         this.bot.on('inline_query', async (ctx) => {
             const to = ctx.inlineQuery.query.toUpperCase();
-            let content = 'Not found';
             if (to.length != 3) {
                 return;
             }
+            log.info('inline_query');
+            log.info(ctx.message);
+            log.info(ctx.inlineQuery);
 
-            let data = await this.net.getExchangeRates(to, currencies);
-            data = JSON.parse(data);
-            content = prepareResponse(data, to);
+            const content = await getRate({text: to, chat: {id: ctx.inlineQuery.from.id}}, this.db);
+            // let data = await this.net.getExchangeRates(to, currencies);
+            // data = JSON.parse(data);
+            // const content = prepareResponse(data, to);
             const result = [{
                 id: ctx.inlineQuery.query,
                 type: 'article',
@@ -115,7 +132,7 @@ export class Controller {
                 /* eslint-disable camelcase */
                 input_message_content: {
                     parse_mode: 'markdown',
-                    message_text: content.content,
+                    message_text: content,
                 },
             }];
             ctx.answerInlineQuery(result);
