@@ -1,15 +1,14 @@
-export default (bot, log, db, currencies, getRate) => {
+export default (bot, log, proccesRate, currencies) => {
     bot.hears(
         new RegExp(`^(${currencies.join('|')})$`, 'i'),
         async (ctx) => {
             log.info('inside bindRate');
+            const content = await proccesRate(
+                ctx.message,
+                currencies
+            );
 
-            if (ctx.message.text) {
-                const content = await getRate(ctx.message, db);
-                return ctx.reply(content);
-            } else {
-                return ctx.reply('do not know this currency');
-            }
+            return ctx.reply(content);
         }
     );
 };

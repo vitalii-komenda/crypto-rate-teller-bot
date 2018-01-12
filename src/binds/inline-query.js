@@ -1,4 +1,4 @@
-export default (bot, log, db, getRate) => {
+export default (bot, log, proccesRate, currencies) => {
     bot.on('inline_query', async (ctx) => {
         const to = ctx.inlineQuery.query.toUpperCase();
         if (to.length != 3) {
@@ -7,10 +7,10 @@ export default (bot, log, db, getRate) => {
         log.info('inline_query');
         log.info(ctx.inlineQuery);
 
-        const content = await getRate({
+        const content = await proccesRate({
             text: to,
             chat: {id: ctx.inlineQuery.from.id},
-        }, db);
+        }, currencies);
         const result = [{
             id: ctx.inlineQuery.query,
             type: 'article',
