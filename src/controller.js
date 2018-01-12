@@ -3,7 +3,7 @@ const db = require('./db');
 const Telegraf = require('telegraf');
 const log = require('lambda-log');
 const currencies = [
-    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC', 'EUR', 'USD',
+    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC', 'EUR',
 ];
 
 const prepareResponse = function(data, to) {
@@ -23,8 +23,8 @@ function precisionRound(number, precision) {
     return Math.round(number * factor) / factor;
   }
 
-const calcChange = (from, to) => {
-    const res = (100 / precisionRound(from, 3)) * precisionRound(to, 3);
+export const calcChange = (from, to) => {
+    const res = (100 / precisionRound(to, 3)) * precisionRound(from, 3);
 
     if (isNaN(res)) {
         return 100;
@@ -127,7 +127,7 @@ export class Controller {
             const result = [{
                 id: ctx.inlineQuery.query,
                 type: 'article',
-                cache_time: 0,
+                cache_time: 2,
                 title: `Show rate`,
                 /* eslint-disable camelcase */
                 input_message_content: {

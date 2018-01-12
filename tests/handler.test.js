@@ -44,14 +44,15 @@ command.btc = {
 // });
 
 test('getRate', async () => {
+    const currencies = {
+        BTC: 10.9782,
+        ETH: 1.5,
+    };
     const db = {
         get() {
             return Promise.resolve({
                 Item: {
-                    currencies: {
-                        BTC: 9.9782,
-                        ETH: 1,
-                    },
+                    currencies,
                 },
             });
         },
