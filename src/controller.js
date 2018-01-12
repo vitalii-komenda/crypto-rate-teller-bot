@@ -7,10 +7,9 @@ const currencies = [
 ];
 
 const prepareResponse = function(data, to) {
-    data = JSON.parse(data);
     const raw = {};
     const str = currencies.map((c) => {
-        raw[c] = parseFloat(data.RAW[c][to].PRICE).toFixed(3);
+        raw[c] = parseFloat(data.RAW[c][to].PRICE);
         return `1 ${c} *${parseFloat(data.RAW[c][to].PRICE).toFixed(3)} ${to}*`;
     });
     const content = `
@@ -24,37 +23,41 @@ export const getRate = async (message, db) => {
     const to = message.text.toUpperCase();
     let data = await net.getExchangeRates(to, currencies);
     data = JSON.parse(data);
+    const prepared = prepareResponse(data, to);
 
+    const id = `${message.from.id.toString()}-${message.text}`;
     const items = await db.get({
-        id: message.from.id.toString(),
+        id,
     });
-    const res = items.Item;
-    log.info(res);
+    const savedItem = items.Item;
+    log.info(savedItem);
     db.put({
-        id: message.from.id.toString(),
-        currencies: data.raw,
+        id,
+        currencies: prepared.raw,
         currency: message.text,
     });
-    if (res.currencies) {
-        const str = Object.keys(res.currencies).map((from) => {
+    if (savedItem && savedItem.currencies) {
+        const items = Object.keys(savedItem.currencies).map((from) => {
             if (!data.RAW[from]) return;
             const val = parseFloat(data.RAW[from][to].PRICE);
-            debugger;
-            const change = (100 / res.currencies[to]) * val;
-            return `1 ${from} ${val.toFixed(3)} ${to} (${(change-100).toFixed()}%)`;
+            const change = (100 / savedItem.currencies[to]) * val;
+            return `1 ${from} is ${val.toFixed(3)} ${to} (${(change-100).toFixed()}%)`;
         });
-        return str.join('\n');
+        log.info('reply');
+        log.info(items);
+        return items.join('\n');
     } else {
-        return prepareResponse(data, to).content;
+        return prepared.content;
     }
 };
 
 
 export class Controller {
-    constructor(bot, log, net) {
+    constructor(bot, log, net, db) {
         this.log = log;
         this.bot = bot;
         this.net = net;
+        this.db = db;
 
         this.bindHi();
         this.bindRate();
@@ -74,19 +77,14 @@ export class Controller {
     bindRate() {
         this.bot.hears(
             new RegExp(`^(${currencies.join('|')})$`, 'i'),
-            (ctx) => {
-                try {
-                    this.log.info('what');
-                    this.log.info(ctx.message);
+            async (ctx) => {
+                this.log.info('inside bindRate');
 
-                    if (ctx.message.text) {
-                        return ctx.reply(this.getRate(ctx.message, this.db));
-                    } else {
-                        return ctx.reply('do not know this currency');
-                    }
-                } catch (error) {
-                    this.log.error(error);
-                };
+                if (ctx.message.text) {
+                    return ctx.reply(await getRate(ctx.message, this.db));
+                } else {
+                    return ctx.reply('do not know this currency');
+                }
             }
         );
     }
@@ -106,7 +104,8 @@ export class Controller {
                 return;
             }
 
-            const data = await this.net.getExchangeRates(to, currencies);
+            let data = await this.net.getExchangeRates(to, currencies);
+            data = JSON.parse(data);
             content = prepareResponse(data, to);
             const result = [{
                 id: ctx.inlineQuery.query,
@@ -129,7 +128,7 @@ export const handle = (token, body) => {
     const bot = new Telegraf(token);
     db.init();
 
-    (new Controller(bot, log, net)).handle(
+    (new Controller(bot, log, net, db)).handle(
         JSON.parse(body)
     );
 };
