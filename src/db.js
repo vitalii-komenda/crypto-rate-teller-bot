@@ -1,16 +1,15 @@
 const AWS = require("aws-sdk");
-const log = require('lambda-log');
 
 AWS.config.update({
-  region: "eu-central-1",
-  endpoint: "http://localhost:8000",
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.SECRET_ACCESS_KEY
+    endpoint: "https://dynamodb.eu-central-1.amazonaws.com",
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    region: process.env.AWS_DEFAULT_REGION
 });
-log.info(process.env.AWS_ACCESS_KEY_ID);
-log.info(process.env.SECRET_ACCESS_KEY);
+
+const log = require('lambda-log');
 const docClient = new AWS.DynamoDB.DocumentClient();
 const table = "rates";
+
 
 exports.put = (currency) => {
     const params = {
@@ -19,15 +18,8 @@ exports.put = (currency) => {
     };
 
     log.info(`Adding a new item... ${JSON.stringify(params)}`);
-    docClient.put(params, function(err, data) {
-        if (err) {
-            log.error(`Unable to add item. Error JSON: ${JSON.stringify(err, null, 2)}`);
-        } else {
-            log.info(`Added item: ${JSON.stringify(data, null, 2)}`);
-        }
-    });
+    return docClient.put(params).promise();
 };
-
 
 exports.get = (currency) => {
     const params = {
@@ -36,16 +28,5 @@ exports.get = (currency) => {
     };
 
     log.info("Getting an item...");
-    docClient.get(params, function(err, data) {
-        if (err) {
-            log.error(`Unable to get item. Error JSON: ${JSON.stringify(err, null, 2)}`);
-        } else {
-            log.info(`Got item: ${JSON.stringify(data, null, 2)}`);
-        }
-    });
+    return docClient.get(params).promise();
 };
-
-// exports.get({
-//     id: 'foo'
-//     // foo: {a:1}
-// });
