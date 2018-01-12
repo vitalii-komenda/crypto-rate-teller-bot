@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: telegram-crypto-rate-bot
+service: telegram-bot
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
@@ -14,12 +14,15 @@ provider:
   runtime: nodejs6.10
   stage: dev
   region: eu-central-1
+  role: YOUR_AWS_ROLE
   environment:
-    TOKEN: YOUR_TOKEN_HERE
+    TOKEN: YOUR_TELEGRAM_TOKEN
+    AWS_DYNAMO_ENDPOINT: https://dynamodb.eu-central-1.amazonaws.com
 
 functions:
   cryptorateteller:
     handler: handler.handle
+    timeout: 20
     events:
       - http:
           path: cryptorateteller

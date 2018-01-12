@@ -1,17 +1,10 @@
 const AWS = require('aws-sdk');
 
-AWS.config.update({
-    endpoint: 'https://dynamodb.eu-central-1.amazonaws.com',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    region: process.env.AWS_DEFAULT_REGION,
-});
-
 const log = require('lambda-log');
 const docClient = new AWS.DynamoDB.DocumentClient();
 const table = 'rates';
 
-
-exports.put = (currency) => {
+export const put = (currency) => {
     const params = {
         TableName: table,
         Item: currency,
@@ -21,7 +14,7 @@ exports.put = (currency) => {
     return docClient.put(params).promise();
 };
 
-exports.get = (currency) => {
+export const get = (currency) => {
     const params = {
         TableName: table,
         Key: currency,
@@ -29,4 +22,12 @@ exports.get = (currency) => {
 
     log.info('Getting an item...');
     return docClient.get(params).promise();
+};
+
+export const init = () => {
+    AWS.config.update({
+        endpoint: process.env.AWS_DYNAMO_ENDPOINT,
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        region: process.env.AWS_DEFAULT_REGION,
+    });
 };

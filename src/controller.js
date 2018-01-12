@@ -19,7 +19,8 @@ ${str.join('\n')}
     return {content, raw};
 };
 
-export const getRate = async (message) => {
+
+export const getRate = async (message, db) => {
     const to = message.text.toUpperCase();
     const data = await net.getExchangeRates(to, currencies);
 
@@ -42,11 +43,12 @@ export const getRate = async (message) => {
             const change = 100 / res.currencies[c] * val;
             return `1 ${c} ${val} ${to} (${change}%)`;
         });
-        return ctx.reply(str.join('\n'));
+        return str.join('\n');
     } else {
-        return ctx.reply(prepareResponse(data, to).content);
+        return prepareResponse(data, to).content;
     }
 };
+
 
 export class Controller {
     constructor(bot, log, net) {
@@ -72,13 +74,13 @@ export class Controller {
     bindRate() {
         this.bot.hears(
             new RegExp(`^(${currencies.join('|')})$`, 'i'),
-            async (ctx) => {
+            (ctx) => {
                 try {
                     this.log.info('what');
                     this.log.info(ctx.message);
 
                     if (ctx.message.text) {
-                        return ctx.reply(getRate(ctx.message));
+                        return ctx.reply(this.getRate(ctx.message, this.db));
                     } else {
                         return ctx.reply('do not know this currency');
                     }
@@ -123,8 +125,9 @@ export class Controller {
 };
 
 
-export default handle = (token, body) => {
+export const handle = (token, body) => {
     const bot = new Telegraf(token);
+    db.init();
 
     (new Controller(bot, log, net)).handle(
         JSON.parse(body)

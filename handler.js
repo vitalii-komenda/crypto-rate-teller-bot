@@ -5,6 +5,7 @@ module.exports.handle = (event, context, callback) => {
     let resp = 'Body is empty';
     if (event.body) {
         const controller = require('./src/controller');
+
         log.info('Started');
         log.info(event.body);
 
