@@ -3,7 +3,7 @@ const db = require('./db');
 const Telegraf = require('telegraf');
 const log = require('lambda-log');
 const currencies = [
-    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC', 'EUR',
+    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC', 'EUR', 'USD',
 ];
 
 const prepareResponse = function(data, to) {
@@ -51,7 +51,7 @@ export const getRate = async (message, db) => {
     });
     if (savedItem && savedItem.currencies) {
         const items = Object.keys(savedItem.currencies).map((from) => {
-            if (!data.RAW[from]) return;
+            if (!data.RAW[from] || from === to) return;
             const val = parseFloat(data.RAW[from][to].PRICE);
             const change = calcChange(savedItem.currencies[from], val);
             return `1 ${from} is *${val.toFixed(3)} ${to}* (${(100 - change).toFixed(1)}%)`;
