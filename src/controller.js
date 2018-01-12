@@ -2,9 +2,9 @@ const net = require('./net');
 const db = require('./db');
 const Telegraf = require('telegraf');
 const log = require('lambda-log');
-const currencies = [
-    'BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC', 'EUR', 'USD',
-];
+const currencies = ['BTC', 'XRP', 'ETH', 'EOS', 'KRB', 'IOT', 'LTC', 'UAH', 'ZEC', 'EUR', 'USD'];
+
+
 
 const prepareResponse = function(data, to) {
     const raw = {};
@@ -64,88 +64,23 @@ export const getRate = async (message, db) => {
     }
 };
 
-
-export class Controller {
-    constructor(bot, log, net, db) {
-        this.log = log;
-        this.bot = bot;
-        this.net = net;
-        this.db = db;
-
-        this.bindHi();
-        this.bindRate();
-        this.bindHelp();
-        this.bindInlineQuery();
-    }
-
-    handle(body) {
-        this.bot.handleUpdate(body);
-    }
-
-
-    bindHi() {
-        this.bot.hears('hi', (ctx) => ctx.reply('Hey there!'));
-    }
-
-    bindRate() {
-        this.bot.hears(
-            new RegExp(`^(${currencies.join('|')})$`, 'i'),
-            async (ctx) => {
-                this.log.info('inside bindRate');
-
-                if (ctx.message.text) {
-                    const content = await getRate(ctx.message, this.db);
-                    return ctx.reply(content);
-                } else {
-                    return ctx.reply('do not know this currency');
-                }
-            }
-        );
-    }
-
-    bindHelp() {
-        this.bot.command(
-            'help',
-            (ctx) => ctx.reply('Type currency name to see rates (for example EUR)')
-        );
-    }
-
-    bindInlineQuery() {
-        this.bot.on('inline_query', async (ctx) => {
-            const to = ctx.inlineQuery.query.toUpperCase();
-            if (to.length != 3) {
-                return;
-            }
-            log.info('inline_query');
-            log.info(ctx.message);
-            log.info(ctx.inlineQuery);
-
-            const content = await getRate({text: to, chat: {id: ctx.inlineQuery.from.id}}, this.db);
-            // let data = await this.net.getExchangeRates(to, currencies);
-            // data = JSON.parse(data);
-            // const content = prepareResponse(data, to);
-            const result = [{
-                id: ctx.inlineQuery.query,
-                type: 'article',
-                cache_time: 2,
-                title: `Show rate`,
-                /* eslint-disable camelcase */
-                input_message_content: {
-                    parse_mode: 'markdown',
-                    message_text: content,
-                },
-            }];
-            ctx.answerInlineQuery(result);
-        });
-    }
-};
-
-
 export const handle = (token, body) => {
     const bot = new Telegraf(token);
     db.init();
-
-    (new Controller(bot, log, net, db)).handle(
-        JSON.parse(body)
+    require('./binds/hi').default(bot);
+    require('./binds/help').default(bot);
+    require('./binds/rate').default(
+        bot,
+        log,
+        db,
+        currencies,
+        getRate
     );
+    require('./binds/inline-query').default(
+        bot,
+        log,
+        db,
+        getRate
+    );
+    bot.handleUpdate(JSON.parse(body));
 };
