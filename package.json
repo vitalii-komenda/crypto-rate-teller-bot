@@ -30,6 +30,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test-debug": "node --inspect-brk node_modules/.bin/jest",
     "eslint": "./node_modules/.bin/eslint ."
   },
   "repository": {

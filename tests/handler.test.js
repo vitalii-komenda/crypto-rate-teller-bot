@@ -25,7 +25,7 @@ command.btc = {
                     'type': 'private',
                 },
                 'date': 1515772570,
-                'text': 'btc',
+                'text': 'eur',
             },
         },
     ],
@@ -49,7 +49,8 @@ test('getRate', async () => {
             return Promise.resolve({
                 Item: {
                     currencies: {
-                        BTC: 150,
+                        BTC: 1,
+                        EUR: 14100,
                     },
                 },
             });
@@ -58,12 +59,14 @@ test('getRate', async () => {
             return Promise.resolve({
                 Item: {
                     currencies: {
-                        BTC: 150,
+                        BTC: 1,
+                        EUR: 14100,
                     },
                 },
             });
         },
     };
 
-    expect(getRate(command.btc.result[0].message, db)).toEqual(1);
+    const res = await getRate(command.btc.result[0].message, db);
+    expect(res).toEqual(1);
 });

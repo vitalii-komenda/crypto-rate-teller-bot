@@ -22,7 +22,8 @@ ${str.join('\n')}
 
 export const getRate = async (message, db) => {
     const to = message.text.toUpperCase();
-    const data = await net.getExchangeRates(to, currencies);
+    let data = await net.getExchangeRates(to, currencies);
+    data = JSON.parse(data);
 
     const items = await db.get({
         id: message.from.id.toString(),
@@ -34,14 +35,13 @@ export const getRate = async (message, db) => {
         currencies: data.raw,
         currency: message.text,
     });
-    log.info(data.RAW);
     if (res.currencies) {
-        const str = Object.keys(res.currencies).map((c) => {
-            const val = 1;//parseFloat(data.RAW[c][to].PRICE).toFixed(3);
-            log.info(c);
-            log.info(to);
-            const change = 100 / res.currencies[c] * val;
-            return `1 ${c} ${val} ${to} (${change}%)`;
+        const str = Object.keys(res.currencies).map((from) => {
+            if (!data.RAW[from]) return;
+            const val = parseFloat(data.RAW[from][to].PRICE);
+            debugger;
+            const change = (100 / res.currencies[to]) * val;
+            return `1 ${from} ${val.toFixed(3)} ${to} (${(change-100).toFixed()}%)`;
         });
         return str.join('\n');
     } else {
