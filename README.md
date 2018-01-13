@@ -15,7 +15,7 @@ Generate token using https://t.me/BotFather.
 Put the token in serverless.yml under environment section.
 Also don't forget to set AWS_DYNAMO_ENDPOINT and right role name
 
-### Install packages
+#### Install packages
 ```
 npm i
 npm install serverless -g
