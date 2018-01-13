@@ -20,10 +20,6 @@ Also don't forget to set AWS_DYNAMO_ENDPOINT and right role name
 npm i
 npm install serverless -g
 ```
-#### To run locally 
-```
-serverless invoke local --function cryptorateteller
-```
 #### To deploy to AWS Lambda
 ```
 serverless deploy
