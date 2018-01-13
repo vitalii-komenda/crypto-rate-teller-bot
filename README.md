@@ -33,6 +33,16 @@ curl -F "url=https://[RETURNED_LINK]/dev/cryptorateteller" https://api.telegram.
 npm run test
 ```
 
+### Debugging 
+#### Logs
+```
+serverless logs -f cryptorateteller
+```
+#### Test with debugger
+```
+npm run test-debug
+```
+
 
 ## Usage
 #### Go to an user or group and type to bot currency that you want to know exchange rate for
