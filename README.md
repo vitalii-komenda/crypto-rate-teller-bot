@@ -33,7 +33,7 @@ curl -F "url=https://[RETURNED_LINK]/dev/cryptorateteller" https://api.telegram.
 npm run test
 ```
 
-### Debugging 
+## Debugging 
 #### Logs
 ```
 serverless logs -f cryptorateteller
