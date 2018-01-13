@@ -58,14 +58,25 @@ const generateId = (id, to) => {
     return `${id.toString()}-${to}`;
 };
 
-const formatResponseWithPercents = function(exchangeRates, to, currencies) {
+export const formatResponseWithPercents = function(
+    exchangeRates, to, currencies
+) {
     const items = Object.keys(currencies).map((from) => {
         if (!exchangeRates.RAW[from] || from === to) return;
 
         const val = parseFloat(exchangeRates.RAW[from][to].PRICE);
         const change = calcChangedPercents(currencies[from], val);
-        return `1 ${from} is *${val.toFixed(3)} ${to}* (${(change).toFixed(1)}%)`;
-    }).filter((v) => v);
+
+        return [
+            change,
+            `1 ${from} is *${val.toFixed(3)} ${to}* (${(change).toFixed(1)}%)`,
+        ];
+    })
+        .filter((v) => v)
+        .sort((a, b) => {
+            return b[0] - a[0];
+        })
+        .map((v) => v[1]);
 
     return items.join('\n');
 };
