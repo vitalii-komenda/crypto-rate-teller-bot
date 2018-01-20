@@ -18,6 +18,7 @@ provider:
   environment:
     TOKEN: YOUR_TELEGRAM_TOKEN
     AWS_DYNAMO_ENDPOINT: https://dynamodb.eu-central-1.amazonaws.com
+    CURRENCIES: 'BTC XRP ETH ETC EOS KRB IOT LTC UAH ZEC EUR USD'
 
 functions:
   cryptorateteller:

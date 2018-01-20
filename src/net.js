@@ -3,6 +3,10 @@ const request = require('request');
 const db = require('./db');
 db.init();
 
+const FIATS = ['EUR', 'USD', 'UAH'];
+const isFiat = (currency) => {
+    return FIATS.indexOf(currency.toUpperCase()) !== -1;
+};
 
 export const getExchangeRates = function(to, currencies) {
     const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${currencies.join(',')}&tsyms=${to}`;
@@ -62,14 +66,16 @@ export const formatResponseWithPercents = function(
     exchangeRates, to, currencies
 ) {
     const items = Object.keys(currencies).map((from) => {
-        if (!exchangeRates.RAW[from] || from === to) return;
+        if (!exchangeRates.RAW[from] ||
+            from === to ||
+            isFiat(from) && isFiat(to)) return;
 
         const val = parseFloat(exchangeRates.RAW[from][to].PRICE);
-        const change = calcChangedPercents(currencies[from], val);
+        const change = calcChangedPercents(currencies[from], val).toFixed(1);
 
         return [
             change,
-            `1 ${from} is *${val.toFixed(3)} ${to}* (${(change).toFixed(1)}%)`,
+            `1 ${from} is *${val.toFixed(3)} ${to}* (${change}%)`,
         ];
     })
         .filter((v) => v)
@@ -83,6 +89,8 @@ export const formatResponseWithPercents = function(
 
 const formatResponse = function(exchangeRates, to, currencies) {
     const items = currencies.map((from) => {
+        if (isFiat(from) && isFiat(to)) return;
+
         return `1 ${from} is *${parseFloat(exchangeRates.RAW[from][to].PRICE).toFixed(3)} ${to}*`;
     });
 
