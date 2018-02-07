@@ -21,7 +21,10 @@ export const getExchangeRates = function(to, currencies) {
     });
 };
 
-export const saveExchangeRates = async (id, currencies, to, exchangeRates) => {
+export const saveExchangeRates = async (
+    id, currencies, to,
+    username, exchangeRates
+) => {
     const data = {};
     currencies.forEach((from) => {
         data[from] = parseFloat(exchangeRates.RAW[from][to].PRICE);
@@ -31,6 +34,8 @@ export const saveExchangeRates = async (id, currencies, to, exchangeRates) => {
         id,
         currencies: data,
         currency: to,
+        username,
+        date: (new Date()).toString(),
     });
 };
 
@@ -43,7 +48,7 @@ export const proccesRate = async (message, currencies) => {
     const savedItem = gotItem.Item;
 
     log.info(savedItem);
-    saveExchangeRates(id, currencies, to, exchangeRates);
+    saveExchangeRates(id, currencies, to, message.from.username, exchangeRates);
 
     log.info(id);
     if (savedItem && savedItem.currencies) {
