@@ -95,8 +95,9 @@ export const formatResponseWithPercents = function(
 const formatResponse = function(exchangeRates, to, currencies) {
     const items = currencies.map((from) => {
         if (isFiat(from) && isFiat(to)) return;
+        const price = parseFloat(exchangeRates.RAW[from][to].PRICE).toFixed(3);
 
-        return `1 ${from} is *${parseFloat(exchangeRates.RAW[from][to].PRICE).toFixed(3)} ${to}*`;
+        return `1 ${from} is *${price} ${to}*`;
     });
 
     return `
