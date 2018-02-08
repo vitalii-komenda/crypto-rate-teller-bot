@@ -11,9 +11,9 @@ export default (bot, log, proccesRate, currencies) => {
             text: to,
             chat: {
                 id: ctx.inlineQuery.from.id,
-                from: {
-                    username: ctx.inlineQuery.from.username,
-                },
+            },
+            from: {
+                username: ctx.inlineQuery.from.username,
             },
         }, currencies);
         const result = [{
