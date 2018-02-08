@@ -9,7 +9,12 @@ export default (bot, log, proccesRate, currencies) => {
 
         const content = await proccesRate({
             text: to,
-            chat: {id: ctx.inlineQuery.from.id},
+            chat: {
+                id: ctx.inlineQuery.from.id,
+                from: {
+                    username: ctx.inlineQuery.from.username,
+                },
+            },
         }, currencies);
         const result = [{
             id: ctx.inlineQuery.query,
