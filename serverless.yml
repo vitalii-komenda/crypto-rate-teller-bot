@@ -14,9 +14,9 @@ provider:
   runtime: nodejs6.10
   stage: dev
   region: eu-central-1
-  role: arn:aws:iam::766675917067:role/Lambda
+  role: YOUR_AWS_ROLE
   environment:
-    TOKEN: 546703598:AAGrwW__0k3oeDzT5Z9mpMrW6jkRxxpbi7w
+    TOKEN: YOUR_TELEGRAM_TOKEN
     AWS_DYNAMO_ENDPOINT: https://dynamodb.eu-central-1.amazonaws.com
     CURRENCIES: 'BTC XRP ETH ETC EOS KRB IOT LTC UAH ZEC EUR USD'
 
