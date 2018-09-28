@@ -1,6 +1,6 @@
-import {formatResponseWithPercents} from '../src/net';
+import {responseWithPercents} from './response';
 
-test('formatResponseWithPercents', async () => {
+test('responseWithPercents', async () => {
     const currencies = {
         BTC: 10.9782,
         ETH: 1.5,
@@ -35,7 +35,7 @@ test('formatResponseWithPercents', async () => {
         },
     };
 
-    const res = await formatResponseWithPercents(
+    const res = await responseWithPercents(
         exchangeRates,
         'ETH',
         currencies
