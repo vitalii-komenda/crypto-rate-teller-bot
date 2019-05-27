@@ -7,6 +7,7 @@ db.init();
 export const exchangeRate = async (message, currencies) => {
     const currency = message.text.toUpperCase();
     const resp = await net.getExchangeRates(currency, currencies);
+    log.info(`got resp ${resp}`);
     const exchangeRates = JSON.parse(resp);
     const id = generateId(message.chat.id, currency);
     const item = (await db.get({id})).Item;
@@ -15,7 +16,9 @@ export const exchangeRate = async (message, currencies) => {
     const preparedCurrencies = {};
     currencies.forEach((from) => {
         preparedCurrencies[from] = parseFloat(
-            exchangeRates.RAW[from][currency].PRICE
+            exchangeRates.RAW[from] ?
+                exchangeRates.RAW[from][currency].PRICE
+                : 0
         );
     });
     db.put({
