@@ -3,15 +3,18 @@
   "version": "0.0.1",
   "description": "Telegram inline bot which tells cryptocurrency prices Edit",
   "main": "index.js",
+  "engines": {
+    "node": ">= 12"
+  },
   "dependencies": {
-    "aws-sdk": "^2.324.0",
+    "aws-sdk": "^2.577.0",
     "babel-runtime": "^6.26.0",
     "dotenv": "^4.0.0",
     "jest": "^21.2.1",
     "lambda-log": "^1.5.0",
     "request": "^2.88.0",
     "source-map-support": "^0.4.18",
-    "telegraf": "^3.24.0"
+    "telegraf": "^3.33.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -23,7 +26,7 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-config-google": "^0.9.1",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-import": "^2.18.2",
     "git-hooks": "^1.1.10",
     "serverless-webpack": "^4.4.0",
     "webpack": "^3.12.0",
