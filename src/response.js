@@ -18,7 +18,7 @@ export function round(number, precision) {
 };
 
 export const responseWithPercents = function(
-    exchangeRates, to, currencies
+    exchangeRates, to, {currencies, username}
 ) {
     const items = Object.keys(currencies).map((from) => {
         if (!exchangeRates.RAW[from] ||
@@ -39,7 +39,7 @@ export const responseWithPercents = function(
         })
         .map((v) => v[1]);
 
-    return items.join('\n');
+    return `Diff since the last call for ${username}\n\n${items.join('\n')}`;
 };
 
 export const response = function(exchangeRates, to, currencies) {

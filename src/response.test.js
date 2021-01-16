@@ -38,8 +38,9 @@ test('responseWithPercents', async () => {
     const res = await responseWithPercents(
         exchangeRates,
         'ETH',
-        currencies
+        {currencies, username: 'me'}
     );
-    expect(res).toEqual(`1 EUR is *1000.100 ETH* (99.5%)
+    expect(res).toEqual(`Diff since the last call for me\n
+1 EUR is *1000.100 ETH* (99.5%)
 1 BTC is *10.100 ETH* (-8.7%)`);
 });
