@@ -39,7 +39,7 @@ export const responseWithPercents = function(
         })
         .map((v) => v[1]);
 
-    return `Diff since the last call for ${username}\n\n${items.join('\n')}`;
+    return `Diff since the last ${username}'s call\n\n${items.join('\n')}`;
 };
 
 export const response = function(exchangeRates, to, currencies) {
