@@ -21,12 +21,13 @@ export const exchangeRate = async (message, currencies) => {
                 : 0
         );
     });
+    const date = (new Date()).toString();
     db.put({
         id,
         currencies: preparedCurrencies,
         currency,
         username: message.from.username,
-        date: (new Date()).toString(),
+        date,
     });
 
     log.info(id);
@@ -35,7 +36,8 @@ export const exchangeRate = async (message, currencies) => {
         return response.responseWithPercents(
             exchangeRates,
             currency,
-            {currencies: item.currencies, username: item.username}
+            {currencies: item.currencies, username: item.username},
+            date
         );
     } else {
         return response.response(exchangeRates, currency, currencies);
