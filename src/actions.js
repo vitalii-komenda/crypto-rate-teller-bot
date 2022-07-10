@@ -21,13 +21,13 @@ export const exchangeRate = async (message, currencies) => {
                 : 0
         );
     });
-    const date = (new Date()).toString();
+    const date = new Date();
     db.put({
         id,
         currencies: preparedCurrencies,
         currency,
         username: message.from.username,
-        date,
+        date: date.toString(),
     });
 
     log.info(id);
@@ -37,7 +37,7 @@ export const exchangeRate = async (message, currencies) => {
             exchangeRates,
             currency,
             {currencies: item.currencies, username: item.username},
-            `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`
+            `${date.toUTCString()}`
         );
     } else {
         return response.response(exchangeRates, currency, currencies);
