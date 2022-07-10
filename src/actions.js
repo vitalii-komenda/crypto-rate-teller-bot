@@ -37,7 +37,7 @@ export const exchangeRate = async (message, currencies) => {
             exchangeRates,
             currency,
             {currencies: item.currencies, username: item.username},
-            date
+            `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`
         );
     } else {
         return response.response(exchangeRates, currency, currencies);
