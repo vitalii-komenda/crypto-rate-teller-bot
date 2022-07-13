@@ -18,7 +18,7 @@ export function round(number, precision) {
 };
 
 export const responseWithPercents = function(
-    exchangeRates, to, {currencies, username}, date
+    exchangeRates, to, {currencies, savedDate}, date
 ) {
     const items = Object.keys(currencies).map((from) => {
         if (!exchangeRates.RAW[from] ||
@@ -39,7 +39,7 @@ export const responseWithPercents = function(
         })
         .map((v) => v[1]);
 
-    return `Diff since the last ${username}'s call ${date} 
+    return `Diff between *${savedDate}* - *${date}*
 \n${items.join('\n')}`;
 };
 

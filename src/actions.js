@@ -36,7 +36,10 @@ export const exchangeRate = async (message, currencies) => {
         return response.responseWithPercents(
             exchangeRates,
             currency,
-            {currencies: item.currencies, username: item.username},
+            {
+                currencies: item.currencies,
+                savedDate: (new Date(item.date)).toUTCString(),
+            },
             `${date.toUTCString()}`
         );
     } else {
