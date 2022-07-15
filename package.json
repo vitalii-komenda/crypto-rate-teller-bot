@@ -9,6 +9,7 @@
   "dependencies": {
     "aws-sdk": "^2.814.0",
     "babel-runtime": "^6.26.0",
+    "date-and-time": "^2.4.0",
     "dotenv": "^4.0.0",
     "jest": "^21.2.1",
     "lambda-log": "^1.5.0",

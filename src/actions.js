@@ -2,6 +2,8 @@ const log = require('lambda-log');
 const db = require('./db');
 const response = require('./response');
 const net = require('./net');
+const dateAndTime = require('date-and-time');
+
 db.init();
 
 export const exchangeRate = async (message, currencies) => {
@@ -33,14 +35,15 @@ export const exchangeRate = async (message, currencies) => {
     log.info(id);
     if (item && item.currencies) {
         log.info('format with percents');
+        const datePassed = dateAndTime.subtract(date, new Date(item.date));
+
         return response.responseWithPercents(
             exchangeRates,
             currency,
             {
                 currencies: item.currencies,
-                savedDate: (new Date(item.date)).toUTCString(),
             },
-            `${date.toUTCString()}`
+            `${datePassed.toDays().toFixed(0)} days or ${datePassed.toHours().toFixed(0)} hours or ${datePassed.toMinutes().toFixed(0)} minutes`
         );
     } else {
         return response.response(exchangeRates, currency, currencies);
