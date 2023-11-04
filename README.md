@@ -1,23 +1,21 @@
 # Crypto rate bot
 
-A Telegram inline bot to getting list of cryptocurrency exchange rates for fiat.
-Its on [serverless](https://serverless.com/) and can be deployed to AWS Lambda.
-
-The code is written on nodejs 8 and compiled down to nodejs 6 by babel, because AWS Lambda does not support nodejs 8 yet.
+A Telegram inline bot that tells exchange rates from cryptocurrency to fiat.
+Deployes with [serverless](https://serverless.com/) specifically to AWS Lambda.
 
 [https://t.me/CryptoRateTeller_bot](https://t.me/CryptoRateTeller_bot)
 
 ## Installation on your server
 Generate token using https://t.me/BotFather.
-Put the token in serverless.yml under environment section.
-Also don't forget to set AWS_DYNAMO_ENDPOINT and right role name
+Set the token in serverless.yml under the environment section.
+Don't forget to set AWS_DYNAMO_ENDPOINT and the right role name
 
 #### Install packages
 ```
 npm i
 npm install serverless -g
 ```
-#### To deploy to AWS Lambda
+#### Deploy to AWS Lambda
 ```
 serverless deploy
 
@@ -42,7 +40,7 @@ npm run test-debug
 
 
 ## Usage
-#### Go to an user or group and type to bot currency that you want to know exchange rate for
+#### Go to a user or channel and type currency that you want to know the exchange rate for
 ```
 @CryptoRateTeller_bot uah
 ```
