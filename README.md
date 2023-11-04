@@ -1,4 +1,4 @@
-# Crypto rate bot
+# Crypto rate telegram bot
 
 A Telegram inline bot that tells exchange rates from cryptocurrency to fiat.
 Deployes with [serverless](https://serverless.com/) specifically to AWS Lambda.
